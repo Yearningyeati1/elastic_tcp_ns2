@@ -4,7 +4,7 @@
 #include "../ns-linux-util.h"
 #include "tcp_elastic.h"
 #include <math.h>
-
+#include <stdbool.h>
 /* crude Elastic TCP built on top of TCP Vegas implementation of Stephen Hemminger */
 
 
@@ -74,6 +74,7 @@ void tcp_elastic_init(struct sock *sk)
 	struct elastic *elastic = inet_csk_ca(sk);
 	elastic->baseRTT = 0x7fffffff;
 	elastic->maxRTT = 0;
+	elastic->alt = true;
 }
 EXPORT_SYMBOL_GPL(tcp_elastic_init);
 
@@ -131,6 +132,11 @@ static void tcp_elastic_cong_avoid(struct sock *sk, u32 ack,
 {
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct elastic *elastic = inet_csk_ca(sk);
+
+	elastic->alt = !elastic->alt;
+	if(!elastic->alt){
+		return;
+	}
 
 	// if (!elastic->doing_elastic_now)
 	// 	return tcp_reno_cong_avoid(sk, ack, seq_rtt, in_flight, flag);
@@ -281,7 +287,7 @@ static void __exit tcp_elastic_unregister(void)
 module_init(tcp_elastic_register);
 module_exit(tcp_elastic_unregister);
 
-MODULE_AUTHOR("Stephen Hemminger");
+MODULE_AUTHOR("");
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("TCP Elastic");
 #undef NS_PROTOCOL
