@@ -1,3 +1,4 @@
+#include <stdbool.h>
 /*
  * Elastic TCP congestion control interface
  */
@@ -14,6 +15,7 @@ struct elastic {
     u32	minRTT;		/* RTT measured within last RTT (in usec) */
     u32	baseRTT;	/* the min of all Elastic RTT measurements seen (in usec) */
     u32 maxRTT;		/* the max of all Elastic RTT measurements seen (in usec) */
+    bool alt;       /* updates every other ack*/
 };
 
 extern void tcp_elastic_init(struct sock *sk);
