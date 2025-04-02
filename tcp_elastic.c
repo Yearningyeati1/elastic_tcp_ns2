@@ -209,7 +209,7 @@ static void tcp_elastic_cong_avoid(struct sock *sk, u32 ack,
 				/* increase cwnd using ai counter
 				 */
 				while (tp->snd_cwnd_cnt >= tp->snd_cwnd){
-					tp->snd_cwnd_cnt -= tp->snd_cwnd++;
+					tp->snd_cwnd_cnt -= tp->snd_cwnd;
 					tp->snd_cwnd++;
 				}
 
